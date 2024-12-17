@@ -32,7 +32,10 @@ app.engine(
 	handlebars.engine({
 		defaultLayout: "main",
 		layoutsDir: path.join(__dirname, "app", "views", "layouts"),
-		partialsDir: path.join(__dirname, 'app', 'views', 'components'),
+		partialsDir: path.join(__dirname, "app", "views", "components"),
+		helpers: {
+			eq: (a, b) => a === b, // Helper eq para comparação
+		},
 	}),
 );
 

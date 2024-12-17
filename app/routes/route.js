@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 
+const projectController = require('../controllers/ProjectController');
 const dashboardController = require('../controllers/DashboardController');
 const homeController = require('../controllers/HomeController');
 const userController = require('../controllers/UserController');
@@ -38,3 +39,5 @@ route.post("/create", userController.postCreate);
 
 
 route.get("/dashboard", dashboardController.getIndex);
+
+route.get("/projects", projectController.getIndex);

@@ -3,6 +3,6 @@
 
 module.exports = {
 	async getIndex(req, res) {
-		res.render("dashboard", { title: "Dashboard", active: 'dashboard', layout: "painel.handlebars" });
+		res.render("projects", { title: "Projetos", active: 'projects', add: "/project/create", layout: "painel.handlebars" });
 	},	
 };

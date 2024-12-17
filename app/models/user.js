@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
 	{
-		nome: {
+		name: {
 			type: String,
 			required: true,
 		},
@@ -12,21 +12,20 @@ const UserSchema = new mongoose.Schema(
 			unique: true,
 			lowercase: true,
 		},
-		senha: {
+		password: {
 			type: String,
 			required: true,
 		},
-		tipo: {
+		type: {
 			type: String,
-			enum: ["aluno", "admin"], 
+			enum: ["aluno", "admin"],
 			required: true,
 		},
 	},
 	{
-		timestamps: true, 
+		timestamps: true,
 	},
 );
 
 const User = mongoose.model("User", UserSchema);
-
 module.exports = User;

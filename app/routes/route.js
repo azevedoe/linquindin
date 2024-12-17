@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 
+const dashboardController = require('../controllers/DashboardController');
 const homeController = require('../controllers/HomeController');
 const userController = require('../controllers/UserController');
 const route = express.Router();
@@ -24,6 +25,16 @@ const upload = multer({ storage: storage });
 route.get("/", homeController.getHome);
 
 
-//Controller Usuario
+// Rotas de Login
+
+route.get("/sign-up", userController.getSignup);
+route.post("/sign-up", userController.postCreate);
 route.get("/login", userController.getLogin);
 route.post("/login", userController.postLogin);
+route.get("/logout", userController.getLogout);
+
+// Cadastro de usuário (extra)
+route.post("/create", userController.postCreate);
+
+
+route.get("/dashboard", dashboardController.getIndex);

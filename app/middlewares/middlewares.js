@@ -4,16 +4,24 @@ module.exports = {
 		next();
 	},
 	sessionControl(req, res, next) {
-		console.log(req.session.login, res.locals.login, req.session.tipo, res.locals.admin, req.url, req.method)
-		
-		if (req.session.login !== undefined) {
+		if (req.session.userId) {
 			res.locals.login = req.session.login;
-			if (req.session.tipo === 2) {
+
+			if (req.session.type === "admin") {
 				res.locals.admin = true;
 			}
+
+			if (req.url === "/login" && req.method === "GET") {
+				return res.redirect("/dashboard");
+			}
+
 			next();
-		} else if (req.url === "/dashboard" && req.method === "GET") next();
-		else if (req.url === "/login" && req.method === "POST") next();
-		else res.redirect("/");
+		} else {
+			if (req.url === "/login" || req.url === "/" || req.method === "POST") {
+				return next();
+			}
+
+			return res.redirect("/login");
+		}
 	},
 };

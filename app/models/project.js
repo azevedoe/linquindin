@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const ProjectSchema = new mongoose.Schema(
 	{
-		nome: {
+		title: {
 			type: String,
 			required: true,
 		},
-		resumo: {
+		subtitle: {
 			type: String,
 			required: true,
 		},
@@ -14,13 +14,13 @@ const ProjectSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		desenvolvedores: [
+		developers: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "User", 
 			},
 		],
-		palavrasChave: [
+		keywords: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "Keyword", 

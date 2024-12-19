@@ -20,24 +20,26 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage });
 
-
-
-
 route.get("/", homeController.getHome);
 
-
 // Rotas de Login
-
 route.get("/sign-up", userController.getSignup);
 route.post("/sign-up", userController.postCreate);
 route.get("/login", userController.getLogin);
 route.post("/login", userController.postLogin);
 route.get("/logout", userController.getLogout);
 
-// Cadastro de usuário (extra)
+// Cadastro de usuário 
 route.post("/create", userController.postCreate);
 
 
 route.get("/dashboard", dashboardController.getIndex);
 
+
 route.get("/projects", projectController.getIndex);
+route.get("/project/create", projectController.getCreateForm);
+route.post("/project/create", projectController.createProject);
+route.get("/project/:id", projectController.getProjectById);
+route.get("/project/:id/edit", projectController.getEditForm);
+route.post("/project/:id/edit", projectController.updateProject);
+route.post("/project/:id/delete", projectController.deleteProject);

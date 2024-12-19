@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const KeywordSchema = new mongoose.Schema({
-	nome: {
+	name: {
 		type: String,
 		required: true,
 		unique: true,

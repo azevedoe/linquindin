@@ -1,21 +1,28 @@
 const database = require("./app/database/connection");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const routes = require("./app/routes/route");
 const handlebars = require("express-handlebars");
+const Handlebars = require("handlebars");
 const express = require("express");
 
 const session = require("express-session");
 const middlewares = require("./app/middlewares/middlewares");
 const path = require("node:path");
+const {
+	allowInsecurePrototypeAccess,
+} = require("@handlebars/allow-prototype-access");
 
 const app = express();
 
-mongoose.connect(database.connection).then(() => {
-    console.log('conectado');
-}).catch(() => {
-    console.log('erro');
-});
+mongoose
+	.connect(database.connection)
+	.then(() => {
+		console.log("conectado");
+	})
+	.catch(() => {
+		console.log("erro");
+	});
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -33,8 +40,24 @@ app.engine(
 		defaultLayout: "main",
 		layoutsDir: path.join(__dirname, "app", "views", "layouts"),
 		partialsDir: path.join(__dirname, "app", "views", "components"),
+		handlebars: allowInsecurePrototypeAccess(Handlebars),
 		helpers: {
-			eq: (a, b) => a === b, // Helper eq para comparação
+			eq: (a, b) => a === b,
+			includes: (array, value, options) => {
+				if (!Array.isArray(array)) return false;
+
+				if (array.includes(value)) {
+					return options.fn ? options.fn(this) : true; // Suporte a lógica de bloco
+				}
+
+				return options.inverse ? options.inverse(this) : false; // Suporte a lógica inversa
+			},
+			getInitials: (name) => {
+				if (!name) return "";
+				const parts = name.split(" ");
+				const initials = parts.map((part) => part.charAt(0).toUpperCase());
+				return initials.slice(0, 2).join("");
+			},
 		},
 	}),
 );

@@ -1,18 +1,18 @@
 const mongoose = require("mongoose");
 
 const SkillSchema = new mongoose.Schema({
-	nome: {
+	name: {
 		type: String,
 		required: true,
 		unique: true,
 	},
-	alunos: [
+	users: [
 		{
-			aluno: {
+			user: {
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "User", 
 			},
-			nivel: {
+			level: {
 				type: Number,
 				min: 0,
 				max: 10,

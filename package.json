@@ -17,6 +17,7 @@
   "dependencies": {
     "@handlebars/allow-prototype-access": "^1.0.5",
     "bcrypt": "^5.1.1",
+    "date-fns": "^4.1.0",
     "express": "^4.21.2",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.1",

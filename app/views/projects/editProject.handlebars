@@ -6,7 +6,14 @@
             </p>
             <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-6">
                 <div class="sm:col-span-6">
-                    <div id="preview-photo" class="size-12"></div>
+                    {{#if project.photo}}
+                    <div id="preview-photo" class="size-12 w-[150px] h-[100px]">
+                        <img class="rounded-md object-cover w-[150px] h-[100px]" src="{{ project.photo }}"
+                            alt="{{ project.title }}">
+                    </div>
+                    {{else }}
+                    <div id="preview-photo" class="size-12 rounded-md w-[150px] h-[100px]"></div>
+                    {{/if}}
                 </div>
                 <div class="sm:col-span-6">
                     <label for="photo" class="block text-sm font-medium text-gray-900">Foto do Projeto</label>
@@ -51,8 +58,8 @@
                     </div>
                 </div>
                 <!-- inputs ocultos para desenvolvedores e palavras-chave -->
-                <input type="hidden" name="developers" id="hidden-developers">
-                <input type="hidden" name="keywords" id="hidden-keywords">
+                <input type="hidden" name="developers" id="hidden-developers" value="{{json developers }}">
+                <input type="hidden" name="keywords" id="hidden-keywords" value="{{json keywords }}">
             </div>
         </div>
 
@@ -181,5 +188,8 @@
             reader.readAsDataURL(file);
         }
     });
+
+
+
 
 </script>

@@ -21,6 +21,10 @@ module.exports = {
 				return next();
 			}
 
+			if (req.url === "/sign-up" || req.url === "/" || req.method === "POST") {
+				return next();
+			}
+
 			return res.redirect("/login");
 		}
 	},

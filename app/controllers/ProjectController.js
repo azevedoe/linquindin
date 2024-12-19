@@ -1,13 +1,29 @@
 const Project = require("../models/project");
 const User = require("../models/user");
 const Keyword = require("../models/keyword");
+const createUpload = require('../utils/upload');  // Importe a função de upload dinâmica
+const { format } = require("date-fns");
+const ptBR = require("date-fns/locale/pt-BR");
+
+async function resolveKeywords(keywords) {
+	const resolvedKeywords = [];
+
+	for (const keyword of keywords) {
+		let existingKeyword = await Keyword.findOne({ name: keyword });
+
+		if (!existingKeyword) {
+			existingKeyword = new Keyword({ name: keyword });
+			await existingKeyword.save();
+		}
+		resolvedKeywords.push(existingKeyword._id);
+	}
+	return resolvedKeywords;
+}
 
 module.exports = {
 	async getIndex(req, res) {
 		try {
-			const projects = await Project.find()
-				.populate("developers", "name email")
-				.populate("keywords", "name");
+			const projects = await Project.find().populate("keywords", "name");
 
 			res.render("projects", {
 				title: "Projetos",
@@ -24,15 +40,13 @@ module.exports = {
 
 	async getCreateForm(req, res) {
 		try {
-			const developers = await User.find({}, ["name", "avatar"]).lean(); 
-			const keywords = await Keyword.find({}, "name").lean(); 
-			
+			const users = await User.find({}, ["name", "avatar"]).lean();
+
 			res.render("projects/createProject", {
 				title: "Criar Projeto",
-				active: 'projects',
+				active: "projects",
 				layout: "painel.handlebars",
-				developers, 
-				keywords, 
+				users,
 			});
 		} catch (err) {
 			console.error(err);
@@ -42,26 +56,35 @@ module.exports = {
 
 	async createProject(req, res) {
 		try {
-			const { title, subtitle, link, developers, keywords } = req.body;
+			const upload = createUpload("projects");
 
-			const newProject = new Project({
-				title,
-				subtitle,
-				link,
-				developers: developers
-					? Array.isArray(developers)
-						? developers
-						: [developers]
-					: [],
-				keywords: keywords
-					? Array.isArray(keywords)
-						? keywords
-						: [keywords]
-					: [],
+			upload(req, res, async (err) => {
+				if (err) {
+					return res
+						.status(400)
+						.send(`Erro ao fazer upload da imagem: ${err.message}`);
+				}
+
+				const { title, subtitle, link, developers, keywords } = req.body;
+
+				const parsedDevelopers = developers && developers !== "[]" ? JSON.parse(developers) : [];
+				const parsedKeywords = keywords && keywords !== "[]" ? JSON.parse(keywords) : [];
+
+				const keywordIds = await resolveKeywords(parsedKeywords);
+
+				const newProject = new Project({
+					title,
+					subtitle,
+					link,
+					developers: parsedDevelopers,
+					keywords: keywordIds,
+					photo: req.file ? `/uploads/projects/${req.file.filename}` : null,
+				});
+
+				await newProject.save();
+
+				res.redirect("/projects");
 			});
-
-			await newProject.save();
-			res.redirect("/projects");
 		} catch (err) {
 			console.error(err);
 			res.status(500).send("Erro ao criar o projeto.");
@@ -93,15 +116,26 @@ module.exports = {
 	async getEditForm(req, res) {
 		try {
 			const { id } = req.params;
-			const project = await Project.findById(id);
-
+			const project = await Project.findById(id).populate("developers", "name avatar").populate("keywords", "name");
+	
 			if (!project) {
 				return res.status(404).send("Projeto não encontrado.");
 			}
-
-			res.render("editProject", {
+	
+			// Pegue os desenvolvedores e palavras-chave associadas ao projeto
+			const developers = project.developers.map(dev => ({
+				id: dev._id,
+				name: dev.name,
+				avatar: dev.avatar
+			}));
+	
+			const keywords = project.keywords.map(keyword => keyword.name);
+	
+			res.render("projects/editProject", {
 				title: "Editar Projeto",
 				project,
+				developers,  
+				keywords,    
 				layout: "painel.handlebars",
 			});
 		} catch (err) {

@@ -14,6 +14,10 @@ const ProjectSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		photo: {
+			type: String,
+			required: true,
+		},
 		developers: [
 			{
 				type: mongoose.Schema.Types.ObjectId,

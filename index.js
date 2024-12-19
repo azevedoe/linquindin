@@ -1,5 +1,7 @@
 const database = require("./app/database/connection");
 const mongoose = require("mongoose");
+const { format } = require("date-fns");
+const ptBR = require("date-fns/locale/pt-BR");
 
 const routes = require("./app/routes/route");
 const handlebars = require("express-handlebars");
@@ -15,8 +17,7 @@ const {
 
 const app = express();
 
-mongoose
-	.connect(database.connection)
+mongoose.connect(database.connection)
 	.then(() => {
 		console.log("conectado");
 	})
@@ -58,6 +59,7 @@ app.engine(
 				const initials = parts.map((part) => part.charAt(0).toUpperCase());
 				return initials.slice(0, 2).join("");
 			},
+			json: (context) => JSON.stringify(context, null, 2),
 		},
 	}),
 );

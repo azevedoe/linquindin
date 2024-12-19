@@ -1,20 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
+	const developersField = document.getElementById("hidden-developers");
+	// const keywordsField = document.getElementById("hidden-keywords");
+	
 	const selectButton = document.querySelector("[aria-haspopup='listbox']");
 	const listbox = document.querySelector("[role='listbox']");
 	const options = listbox.querySelectorAll("[role='option']");
 	const addButton = document.getElementById("add-developer");
 	const developerList = document.getElementById("developer-list");
-	const developers = [];
+	const developers = []; 
 
-	let selectedOption =
-		listbox.querySelector("[aria-selected='true']") || options[0];
+	document.querySelector("form").addEventListener("submit", (event) => {
+		syncKeywords();
+		console.log('será que foi', developerList.value, keywordsField.value)
+	});
+
+	let selectedOption = listbox.querySelector("[aria-selected='true']") || options[0];
 
 	// Add data attributes to each option
 	// biome-ignore lint/complexity/noForEach: <explanation>
 	options.forEach((option) => {
 		const img = option.querySelector("img").src;
 		const name = option.querySelector(".truncate").textContent.trim();
-		const id = option.getAttribute("id") || Date.now(); // Use an existing id or generate one
+		const id = option.getAttribute("data-id") || Date.now(); 
 
 		option.dataset.id = id;
 		option.dataset.name = name;
@@ -32,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	// biome-ignore lint/complexity/noForEach: <explanation>
 	options.forEach((option) => {
 		option.addEventListener("click", () => {
+			console.log('aaa',selectedOption)
 			// Update the selected option
 			if (selectedOption) {
 				selectedOption.removeAttribute("aria-selected");
@@ -68,6 +76,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (!developers.some((dev) => dev.id === developer.id)) {
 				developers.push(developer);
 
+				developersField.value = JSON.stringify(developers.map(dev => dev.id)); 
+
+				console.log(developers, developersField)
+
 				const div = document.createElement("div");
 				div.className =
 					"group relative flex items-center p-4 rounded-lg bg-white shadow-xl ring-1 shadow-black/5 ring-slate-700/10";
@@ -85,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					const index = developers.findIndex((d) => d.id === developer.id);
 					if (index !== -1) {
 						developers.splice(index, 1);
+						developersField.value = JSON.stringify(developers.map(dev => dev.id)); 
 					}
 					div.remove();
 				});

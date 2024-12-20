@@ -78,11 +78,11 @@ module.exports = {
 			res.redirect("/login");
 		});
 	},
+
 	async postCreate(req, res) {
 		try {
-			const upload = createUpload("users");
-	
-			// Transformar o upload em uma Promise para usar async/await
+			const upload = createUpload();
+
 			await new Promise((resolve, reject) => {
 				upload(req, res, (err) => {
 					if (err) {
@@ -91,34 +91,38 @@ module.exports = {
 					resolve();
 				});
 			});
-	
-			// Agora podemos acessar req.body após o upload ser processado
+
 			const { name, email, password, isAdmin, skills } = req.body;
-	
-			// Verificar se a senha existe
+
 			if (!password) {
 				throw new Error('Password is required');
 			}
-	
+
 			const hashedPassword = await bcrypt.hash(password, 10);
-	
+
+			let avatarBase64 = null;
+			if (req.file) {
+				const imageBuffer = req.file.buffer;
+				avatarBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+			}
+
 			const parsedSkills = skills && skills !== "[]" ? JSON.parse(skills) : [];
-	
+
 			await User.create({
 				name,
 				email,
 				password: hashedPassword,
 				type: isAdmin ? 'admin' : 'aluno',
-				avatar: req.file ? `/uploads/users/${req.file.filename}` : null,
+				avatar: avatarBase64, 
 				skills: []
 			});
-	
+
 			if (req.url === "/sign-up") {
 				res.redirect("/login");
 			} else if (req.url === "/users/create") {
 				res.redirect("/users");
 			}
-	
+
 		} catch (error) {
 			console.error("Erro ao criar usuário:", error);
 			res.status(500).send(`Erro ao criar usuário: ${error.message}`);

@@ -27,7 +27,6 @@
               name="photo"
               id="photo"
               value="{{project.title}}"
-              required
               placeholder="Foto do projeto"
               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
             />
@@ -87,6 +86,24 @@
         <input type="checkbox" id="isAdmin" name="isAdmin" />
         <label for="isAdmin">Administrador</label>
       </div>
+
+      <div class="col-span-full">
+        <label
+          for="chips-input"
+          class="block text-sm font-medium text-gray-900"
+        >Palavras-chave</label>
+        <div
+          id="chip-container"
+          class="flex flex-wrap items-center gap-2 mt-2 p-2 bg-white border rounded-lg focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500"
+        >
+          <input
+            id="chips-input"
+            type="text"
+            class="flex-1 border-none focus:outline-none text-sm text-gray-700 placeholder-gray-400"
+            placeholder="Digite e pressione Enter"
+          />
+        </div>
+      </div>
       <div>
         <button
           type="submit"
@@ -95,6 +112,81 @@
           Criar usuário
         </button>
       </div>
+                <input type="hidden" name="skills" id="hidden-skills">
     </form>
   </div>
 </div>
+
+
+<script>
+    const chipContainer = document.getElementById('chip-container');
+    const chipsInput = document.getElementById('chips-input');
+    const skillsField = document.getElementById('hidden-skills');
+
+    function createChip(text) {
+        const chip = document.createElement('div');
+        chip.className = 'flex items-center bg-indigo-100 text-indigo-800 text-sm font-medium px-2 py-1 rounded-full';
+        chip.innerHTML = `
+                        <span>${text}</span>
+                        <button 
+                        class="ml-1 text-indigo-500 hover:text-indigo-800 focus:outline-none"
+                        aria-label="Remover chip">&times;</button>
+                    `;
+
+        chip.querySelector('button').addEventListener('click', () => {
+            chipContainer.removeChild(chip);
+            updateSkillsField();
+        });
+
+        return chip;
+    }
+
+    function chipExists(text) {
+        return Array.from(chipContainer.querySelectorAll('span'))
+            .some(span => span.textContent.trim().toLowerCase() === text.toLowerCase());
+    }
+
+    function updateSkillsField() {
+        const skills = Array.from(chipContainer.querySelectorAll('span'))
+            .map(span => span.textContent.trim());
+        skillsField.value = JSON.stringify(skills);
+    }
+
+    chipsInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && chipsInput.value.trim() !== '') {
+            event.preventDefault();
+
+            const newSkill = chipsInput.value.trim();
+
+            if (chipExists(newSkill)) {
+                chipsInput.value = '';
+                return;
+            }
+
+            const chip = createChip(newSkill);
+            chipContainer.insertBefore(chip, chipsInput);
+
+            updateSkillsField();
+
+            chipsInput.value = '';
+        }
+    });
+
+    const inputPhoto = document.getElementById('photo');
+    const previewPhoto = document.getElementById('preview-photo');
+
+    inputPhoto.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                previewPhoto.innerHTML = `<img src="${e.target.result}" alt="Preview da Foto" class="max-w-full h-auto rounded-md">`;
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+</script>

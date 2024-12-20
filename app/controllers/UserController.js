@@ -1,7 +1,23 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const createUpload = require('../utils/upload');
+const Skill = require("../models/skill");
 // const db = require("../database/connection");
+
+async function resolveSkills(skills) {
+	const resolvedSkill = [];
+
+	for (const skill of skills) {
+		let existingSkill = await Skill.findOne({ name: skill });
+
+		if (!existingSkill) {
+			existingSkill = new Skill({ name: skill });
+			await existingSkill.save();
+		}
+		resolvedSkill.push(existingSkill._id);
+	}
+	return resolvedSkill;
+}
 
 module.exports = {
 	async getSignup(req, res) {
@@ -14,7 +30,7 @@ module.exports = {
 
 	async getAll(req, res) {
 		try {
-			const users = await User.find();
+			const users = await User.find().populate('skills', 'name');
 
 			res.render("users/user-list", {
 				title: "Usuários",
@@ -105,16 +121,17 @@ module.exports = {
 				const imageBuffer = req.file.buffer;
 				avatarBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
 			}
-
+			
 			const parsedSkills = skills && skills !== "[]" ? JSON.parse(skills) : [];
-
+			const keywordIds = await resolveSkills(parsedSkills);
+			console.log(keywordIds)
 			await User.create({
 				name,
 				email,
 				password: hashedPassword,
 				type: isAdmin ? 'admin' : 'aluno',
 				avatar: avatarBase64, 
-				skills: []
+				skills: keywordIds ?? []
 			});
 
 			if (req.url === "/sign-up") {

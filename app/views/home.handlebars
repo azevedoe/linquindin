@@ -4,10 +4,10 @@
         <div class="flex min-w-0 gap-x-4">
             <!-- Foto do Projeto -->
             {{#if photo}}
-            <img class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
+            <img loading="lazy" class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
                 src="{{photo}}" alt="Foto do projeto {{title}}">
             {{else}}
-            <img class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
+            <img loading="lazy" class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
                 src="https://via.placeholder.com/150" alt="Foto do projeto {{title}}">
             {{/if}}
             <div class="min-w-0 flex-auto">

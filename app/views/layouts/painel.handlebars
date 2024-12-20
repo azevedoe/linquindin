@@ -19,7 +19,7 @@
                 <div class="flex h-16 items-center justify-between">
                     <div class="flex items-center">
                         <div class="shrink-0">
-                            <img class="size-8"
+                            <img loading="lazy" class="size-8"
                                 src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
                                 alt="Your Company">
                         </div>
@@ -43,7 +43,7 @@
                             <button type="button"
                                 class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                 id="user-menu-button">
-                                <img class="size-8 rounded-full"
+                                <img loading="lazy" class="size-8 rounded-full"
                                     src="{{#if (notEq userAvatar null)}}{{ userAvatar }}{{else}}https://via.placeholder.com.br/32{{/if }}"
                                     alt="">
                             </button>

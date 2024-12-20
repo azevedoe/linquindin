@@ -11,11 +11,28 @@ module.exports = {
 		res.render("auth/login", { layout: "auth.handlebars" });
 	},
 
+	async getAll(req, res) {
+		try {
+			const users = await User.find();
+
+			res.render("users/user-list", {
+				title: "Usuários",
+				active: "users",
+				users,
+				layout: "painel.handlebars",
+			});
+		} catch (err) {
+			console.error(err);
+			res.status(500).send("Erro ao buscar usuários.");
+		}
+	},
+
 	async postLogin(req, res) {
 		try {
 			const { email, password } = req.body;
 
 			const user = await User.findOne({ email });
+			
 			if (!user) {
 				return res
 					.status(401)
@@ -37,7 +54,7 @@ module.exports = {
 				req.session.isAdmin = true;
 			}
 
-			res.redirect("/dashboard");
+			res.redirect("/projects");
 		} catch (error) {
 			console.error("Erro no login:", error);
 			res
@@ -75,6 +92,22 @@ module.exports = {
 		} catch (error) {
 			console.error("Erro ao criar usuário:", error);
 			res.status(500).send("Erro ao criar usuário.");
+		}
+	},
+
+	async deleteUser(req, res) {
+		try {
+			const { id } = req.params;
+			const deletedUser = await Users.findByIdAndDelete(id);
+
+			if (!deletedUser) {
+				return res.status(404).send("Usuário não encontrado.");
+			}
+
+			res.redirect("/users");
+		} catch (err) {
+			console.error(err);
+			res.status(500).send("Erro ao deletar o usuário.");
 		}
 	},
 };

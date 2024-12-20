@@ -1,0 +1,47 @@
+<ul role="list" class="divide-y divide-gray-100">
+  {{#each users}}
+    <li class="flex justify-between gap-x-6 py-5">
+      <div class="flex min-w-0 gap-x-4">
+        <!-- Foto do Projeto -->
+        {{#if avatar}}
+          <img
+            class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
+            src="{{avatar}}"
+            alt="Foto do usuário {{avatar}}"
+          />
+        {{else}}
+          <img
+            class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
+            src="https://via.placeholder.com/150"
+            alt="Foto do projeto {{avatar}}"
+          />
+        {{/if}}
+        <div class="min-w-0 flex-auto">
+          <!-- Título do Projeto -->
+          <p class="text-sm/6 font-semibold text-gray-900">{{name}}</p>
+          <!-- Subtítulo ou Link -->
+          <p class="mt-1 truncate text-xs/5 text-gray-500">{{email}}</p>
+
+          <p class="mt-1 text-xs/5 text-gray-500">
+            <span
+              class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
+            >{{type}}</span>
+          </p>
+        </div>
+      </div>
+      {{#if (eq type 'aluno')}}
+        <div class="shrink-0 flex gap-3 sm:items-start">
+          <form action="/users/{{_id}}/delete" method="POST">
+            <button
+              type="submit"
+              class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </form>
+        </div>
+      {{/if}}
+
+    </li>
+  {{/each}}
+</ul>

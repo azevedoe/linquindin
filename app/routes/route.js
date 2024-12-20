@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 
 const projectController = require('../controllers/ProjectController');
+const callerProjectController = require('../controllers/CallerProjectController');
 const dashboardController = require('../controllers/DashboardController');
 const homeController = require('../controllers/HomeController');
 const userController = require('../controllers/UserController');
@@ -20,7 +21,7 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage });
 
-route.get("/", homeController.getHome);
+route.get("/", callerProjectController.getIndex);
 
 // Rotas de Login
 route.get("/sign-up", userController.getSignup);
@@ -31,9 +32,9 @@ route.get("/logout", userController.getLogout);
 
 // Cadastro de usuário 
 route.post("/create", userController.postCreate);
-
-
-route.get("/dashboard", dashboardController.getIndex);
+route.get("/users", userController.getAll);
+route.get("/users/logout", userController.getLogout);
+route.get("/users/:id/delete", userController.deleteUser);
 
 
 route.get("/projects", projectController.getIndex);

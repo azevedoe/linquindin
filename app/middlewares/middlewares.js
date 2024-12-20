@@ -12,7 +12,7 @@ module.exports = {
 			}
 
 			if (req.url === "/login" && req.method === "GET") {
-				return res.redirect("/dashboard");
+				return res.redirect("/projects");
 			}
 
 			next();

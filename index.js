@@ -44,6 +44,7 @@ app.engine(
 		handlebars: allowInsecurePrototypeAccess(Handlebars),
 		helpers: {
 			eq: (a, b) => a === b,
+			notEq: (a, b) => a !== b,
 			includes: (array, value, options) => {
 				if (!Array.isArray(array)) return false;
 

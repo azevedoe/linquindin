@@ -65,7 +65,7 @@
                             class="grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                             aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
                             <span class="col-start-1 row-start-1 flex items-center gap-3 pr-6">
-                                <img src="/images/32x32.png" alt="" class="size-5 shrink-0 rounded-full">
+                                <img src="/images/32x32.png" alt="" class="size-5 shrink-0 rounded-full object-cover">
                                 <span class="block truncate">Selecione uma opção</span>
                             </span>
                             <svg class="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"
@@ -89,7 +89,11 @@
                     <li class="relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900" id="listbox-option-0"
                         role="option" data-id="{{ this._id }}">
                         <div class="flex items-center">
-                            <img src="/images/32x32.png" alt="" class="size-5 shrink-0 rounded-full">
+                            {{#if this.avatar }}
+                                <img loading="lazy" src="{{ this.avatar }}" alt="" class="size-5 shrink-0 rounded-full object-cover">
+                            {{else }}
+                                <img loading="lazy" src="/images/32x32.png" alt="" class="size-5 shrink-0 rounded-full object-cover">
+                            {{/if }}
                             <span class="ml-3 block truncate font-normal">{{ this.name }}</span>
                         </div>
                     </li>

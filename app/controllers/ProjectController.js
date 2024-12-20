@@ -42,7 +42,7 @@ module.exports = {
 	async getCreateForm(req, res) {
 		try {
 			const users = await User.find({}, ["name", "avatar"]).lean();
-
+			console.log(users)
 			res.render("projects/createProject", {
 				title: "Criar Projeto",
 				active: "projects",
@@ -104,14 +104,14 @@ module.exports = {
 		try {
 			const { id } = req.params;
 			const project = await Project.findById(id)
-				.populate("developers", "name email")
+				.populate("developers", ["name", "email", "avatar"])
 				.populate("keywords", "name");
 
 			if (!project) {
 				return res.status(404).send("Projeto não encontrado.");
 			}
 
-			res.render("projectDetail", {
+			res.render("projects/projectDetail", {
 				title: "Detalhes do Projeto",
 				project,
 				layout: "painel.handlebars",

@@ -8,17 +8,20 @@ document.addEventListener("DOMContentLoaded", () => {
 	const options = listbox.querySelectorAll("[role='option']");
 	const addButton = document.getElementById("add-developer");
 	const developerList = document.getElementById("developer-list");
-	const developers = JSON.parse(developersFieldEdit.value) ?? [];
-	
-	console.log(developersFieldEdit.value,developersField.value, developers)
+	var developers = [];
 
-	document.querySelector("form").addEventListener("submit", (event) => {
-		syncKeywords();
-		console.log("será que foi", developerList.value, keywordsField.value);
-	});
+	if (developersFieldEdit) {
+		developers = developersFieldEdit.value ? JSON.parse(developersFieldEdit.value) : [];
+	}
 
-	let selectedOption =
-		listbox.querySelector("[aria-selected='true']") || options[0];
+	// console.log('selectButton', selectButton);
+	// console.log('listbox', listbox);
+	// console.log('options', options);
+	// console.log('addButton', addButton);
+	// console.log('developerList', developerList);
+	// console.log('developers', developers);
+
+	let selectedOption = listbox.querySelector("[aria-selected='true']") || options[0];
 
 	// Add data attributes to each option
 	// biome-ignore lint/complexity/noForEach: <explanation>
@@ -43,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	// biome-ignore lint/complexity/noForEach: <explanation>
 	options.forEach((option) => {
 		option.addEventListener("click", () => {
-			console.log("aaa", selectedOption);
+			// console.log("aaa", selectedOption);
 			// Update the selected option
 			if (selectedOption) {
 				selectedOption.removeAttribute("aria-selected");
@@ -69,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// Add developer to the list
 	addButton.addEventListener("click", () => {
+		// console.log('selectedOption',selectedOption)
 		if (selectedOption) {
 			const developer = {
 				id: selectedOption.dataset.id,
@@ -76,13 +80,16 @@ document.addEventListener("DOMContentLoaded", () => {
 				avatar: selectedOption.dataset.avatar,
 			};
 
+			// console.log('developer',developer)
+
 			// Check if developer is already in the list
 			if (!developers.some((dev) => dev.id === developer.id)) {
+				// console.log('asdasd')
 				developers.push(developer);
 
 				developersField.value = JSON.stringify(developers.map((dev) => dev.id));
 
-				console.log(developers, developersField);
+				// console.log(developers, developersField);
 
 				createDeveloper(developer);
 			}
@@ -93,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const div = document.createElement("div");
 		div.className = "group relative flex items-center p-4 rounded-lg bg-white shadow-xl ring-1 shadow-black/5 ring-slate-700/10";
 		div.innerHTML = `
-					<img src="${developer.avatar}" alt="" class="size-10 flex-none rounded-full">
+					<img src="${developer.avatar}" alt="" class="size-10 flex-none rounded-full object-cover">
 					<div class="ml-4 flex-auto">
 						<div class="font-medium">${developer.name}</div>
 						<div class="mt-1 text-slate-700">Desenvolvedor</div>
@@ -123,17 +130,19 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 
-
-	const developersEdit = JSON.parse(developersFieldEdit.value);
+	var developersEdit = []
+	if (developersFieldEdit) {
+		developersEdit = JSON.parse(developersFieldEdit.value);
+	}
 
 	// biome-ignore lint/complexity/noForEach: <explanation>
 	developersEdit.forEach((developer) => {
-        const object = {
+		const object = {
 			id: developer.id,
 			name: developer.name,
 			avatar: developer.avatar ?? '/images/32x32.png',
 		};
 
-		createDeveloper(object)        
-    })
+		createDeveloper(object)
+	})
 });

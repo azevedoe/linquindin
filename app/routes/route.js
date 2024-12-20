@@ -35,6 +35,8 @@ route.post("/create", userController.postCreate);
 route.get("/users", userController.getAll);
 route.get("/logout", userController.getLogout);
 route.get("/users/create", userController.getCreateForm);
+// route.get("/user/:id", userController.getProjectById);
+// route.get("/user/:id/edit", userController.getEditForm);
 route.post("/users/create", userController.postCreate);
 route.post("/users/:id/delete", userController.deleteUser);
 

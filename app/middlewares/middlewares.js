@@ -5,6 +5,7 @@ module.exports = {
 	},
 	sessionControl(req, res, next) {
 		if (req.session.userId) {
+			res.locals.userId = req.session.userId;
 			res.locals.username = req.session.username;
 			res.locals.userAvatar = req.session.avatar;
 			res.locals.userEmail = req.session.userEmail;

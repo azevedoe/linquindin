@@ -1,0 +1,49 @@
+<div class="mt-6 border-t border-gray-100">
+    <dl class="divide-y divide-gray-100">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium text-gray-900">Nome do projeto</dt>
+            <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{project.title}}</dd>
+        </div>
+
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium text-gray-900">Resumo do projeto</dt>
+            <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">{{project.subtitle}}</dd>
+        </div>
+
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium text-gray-900">Link</dt>
+            <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
+                <a target="_blank" href="{{ project.link }}"> {{project.link}}</a>
+            </dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium text-gray-900">Palavras-chave</dt>
+            <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
+                <p class="mt-1 text-xs/5 text-gray-500">
+                    {{#each project.keywords}}
+                    <span
+                        class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">{{name}}</span>
+                    {{/each}}
+                </p>
+            </dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm/6 font-medium text-gray-900">Desenvolvedores</dt>
+            <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                <div
+                    class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-2 xl:gap-x-8 text-[0.8125rem]/5 text-slate-900 ">
+                    {{#each project.developers }}
+                    <div
+                        class="group relative flex items-center p-4 rounded-lg bg-white shadow-xl ring-1 shadow-black/5 ring-slate-700/10">
+                        <img src="{{ this.avatar }}" alt="" class="size-10 flex-none rounded-full object-cover">
+                        <div class="ml-4 flex-auto">
+                            <div class="font-medium">{{this.name}}</div>
+                            <div class="mt-1 text-slate-700">{{ this.email }}</div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </dd>
+        </div>
+    </dl>
+</div>

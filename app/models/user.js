@@ -25,6 +25,12 @@ const UserSchema = new mongoose.Schema(
 			enum: ["aluno", "admin"],
 			required: true,
 		},
+		skills: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Skill",
+			},
+		],
 	},
 	{
 		timestamps: true,

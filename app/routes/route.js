@@ -33,8 +33,10 @@ route.get("/logout", userController.getLogout);
 // Cadastro de usuário 
 route.post("/create", userController.postCreate);
 route.get("/users", userController.getAll);
-route.get("/users/logout", userController.getLogout);
-route.get("/users/:id/delete", userController.deleteUser);
+route.get("/logout", userController.getLogout);
+route.get("/users/create", userController.getCreateForm);
+route.post("/users/create", userController.postCreate);
+route.post("/users/:id/delete", userController.deleteUser);
 
 route.get("/dashboard", dashboardController.getIndex);
 

@@ -36,7 +36,6 @@
           </p>
         </div>
       </div>
-      {{#if isAdmin}}
         <div class="shrink-0 flex gap-3 sm:items-start">
           <form action="/users/{{_id}}/delete" method="POST">
             <button
@@ -47,7 +46,6 @@
             </button>
           </form>
         </div>
-      {{/if}}
 
     </li>
   {{/each}}

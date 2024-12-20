@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const createUpload = require('../utils/upload');
 // const db = require("../database/connection");
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
 				title: "Usuários",
 				active: "users",
 				users,
+				add: '/users/create',
 				layout: "painel.handlebars",
 			});
 		} catch (err) {
@@ -32,7 +34,7 @@ module.exports = {
 			const { email, password } = req.body;
 
 			const user = await User.findOne({ email });
-			
+
 			if (!user) {
 				return res
 					.status(401)
@@ -74,31 +76,70 @@ module.exports = {
 			res.redirect("/login");
 		});
 	},
-
 	async postCreate(req, res) {
 		try {
-			const { name, email, password } = req.body;
-
+			const upload = createUpload("users");
+	
+			// Transformar o upload em uma Promise para usar async/await
+			await new Promise((resolve, reject) => {
+				upload(req, res, (err) => {
+					if (err) {
+						reject(err);
+					}
+					resolve();
+				});
+			});
+	
+			// Agora podemos acessar req.body após o upload ser processado
+			const { name, email, password, isAdmin, skills } = req.body;
+	
+			// Verificar se a senha existe
+			if (!password) {
+				throw new Error('Password is required');
+			}
+	
 			const hashedPassword = await bcrypt.hash(password, 10);
-
+	
+			const parsedSkills = skills && skills !== "[]" ? JSON.parse(skills) : [];
+	
 			await User.create({
 				name,
 				email,
 				password: hashedPassword,
-				type: "aluno",
+				type: isAdmin ? 'admin' : 'aluno',
+				avatar: req.file ? `/uploads/users/${req.file.filename}` : null,
+				skills: []
 			});
-
-			res.redirect("/login");
+	
+			if (req.url === "/sign-up") {
+				res.redirect("/login");
+			} else if (req.url === "/users/create") {
+				res.redirect("/users");
+			}
+	
 		} catch (error) {
 			console.error("Erro ao criar usuário:", error);
-			res.status(500).send("Erro ao criar usuário.");
+			res.status(500).send(`Erro ao criar usuário: ${error.message}`);
+		}
+	},
+
+	async getCreateForm(req, res) {
+		try {
+			res.render("users/createUser", {
+				title: "Criar usuário",
+				active: "users",
+				layout: "painel.handlebars",
+			});
+		} catch (err) {
+			console.error(err);
+			res.status(500).send("Erro ao carregar o formulário de criação.");
 		}
 	},
 
 	async deleteUser(req, res) {
 		try {
 			const { id } = req.params;
-			const deletedUser = await Users.findByIdAndDelete(id);
+			const deletedUser = await User.findByIdAndDelete(id);
 
 			if (!deletedUser) {
 				return res.status(404).send("Usuário não encontrado.");

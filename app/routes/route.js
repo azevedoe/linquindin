@@ -36,7 +36,8 @@ route.get("/users", userController.getAll);
 route.get("/logout", userController.getLogout);
 route.get("/users/create", userController.getCreateForm);
 // route.get("/user/:id", userController.getProjectById);
-// route.get("/user/:id/edit", userController.getEditForm);
+route.get("/user/:id/edit", userController.getEditForm);
+route.post("/user/:id/edit", userController.postUpdate);
 route.post("/users/create", userController.postCreate);
 route.post("/users/:id/delete", userController.deleteUser);
 
@@ -46,6 +47,7 @@ route.get("/projects", projectController.getIndex);
 route.get("/project/create", projectController.getCreateForm);
 route.post("/project/create", projectController.createProject);
 route.get("/project/:id", projectController.getProjectById);
+route.get("/project/:id/show", projectController.getShowProjectById);
 route.get("/project/:id/edit", projectController.getEditForm);
 route.post("/project/:id/edit", projectController.updateProject);
 route.post("/project/:id/delete", projectController.deleteProject);

@@ -1,36 +1,100 @@
+<div class="bg-white">
+    <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+        <h2 class="text-2xl font-bold tracking-tight text-gray-900">Projetos dos nossos usuários</h2>
+
+        <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+            {{#each projects}}
+            <div class="group relative">
+                {{#if photo}}
+                <img src="{{ photo }}" alt="{{ title }}"
+                    class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-40">
+                {{else}}
+                <img loading="lazy"
+                    class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-40"
+                    src="https://via.placeholder.com/150" alt="Foto do projeto {{title}}">
+                {{/if}}
+
+                <div class="mt-4 flex justify-between">
+                    <div>
+                        <h3 class="text-sm text-gray-700">
+                            <a href="/project/{{ _id }}/show">
+                                <span aria-hidden="true" class="absolute inset-0"></span>
+                                {{ title }}
+                            </a>
+                        </h3>
+                        {{#if subtitle}}
+                        <p class="mt-1 truncate text-xs/5 text-gray-500 text-wrap min-h-[80px]">{{subtitle}}</p>
+                        {{/if}}
+
+                        <p class="mt-1 text-xs/5 text-gray-500">
+                            {{#each keywords}}
+                            <span
+                                class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">{{name}}</span>
+                            {{/each}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="bg-white py-24 sm:py-32">
+            <div class="grid max-w-7xl gap-20  xl:grid-cols-3">
+                <div class="max-w-xl">
+                    <h2 class="text-pretty text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
+                        Conheça alguns de nossos usuários
+                    </h2>
+                    <p class="mt-6 text-lg/8 text-gray-600">
+                        Conheça nossos talentosos usuários, incluindo desenvolvedores, especialistas em UX e
+                        profissionais de teste, que impulsionam a inovação e a qualidade em cada projeto.
+                    </p>
+                    <p class="mt-5">
+                        <a href="/login" class="text-sm/6 font-semibold text-gray-900">Ver mais <span aria-hidden="true">&rarr;</span></a>
+                    </p>
+                </div>
+                <ul role="list" class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
+                    {{#each users }}
+                    <li>
+                        <div class="flex items-center gap-x-6">
+                            <img class="size-16 rounded-full object-cover" src="{{ this.avatar }}" alt="">
+                            <div>
+                                <h3 class="text-base/7 font-semibold tracking-tight text-gray-900">{{ this.name }}</h3>
+                                <p class="text-sm/6 font-semibold text-indigo-600">{{this.email}}</p>
+                            </div>
+                        </div>
+                    </li>
+                    {{/each}}
+                    <!-- More people... -->
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{{!--
 <ul role="list" class="divide-y divide-gray-100">
     {{#each projects}}
     <li class="flex justify-between gap-x-6 py-5">
         <div class="flex min-w-0 gap-x-4">
             <!-- Foto do Projeto -->
             {{#if photo}}
-            <img loading="lazy" class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
+            <img loading="lazy"
+                class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
                 src="{{photo}}" alt="Foto do projeto {{title}}">
             {{else}}
-            <img loading="lazy" class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
+            <img loading="lazy"
+                class="aspect-square h-[100px] w-[150px] rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto"
                 src="https://via.placeholder.com/150" alt="Foto do projeto {{title}}">
             {{/if}}
             <div class="min-w-0 flex-auto">
                 <!-- Título do Projeto -->
                 <p class="text-sm/6 font-semibold text-gray-900">{{title}}</p>
                 <!-- Subtítulo ou Link -->
-                {{#if subtitle}}
-                <p class="mt-1 truncate text-xs/5 text-gray-500">{{subtitle}}</p>
-                {{/if}}
-                {{#if link}}
-                <p class="mt-1 truncate text-xs/5 text-gray-500">
-                    <a href="{{link}}" target="_blank" class="text-blue-500">Visite o Projeto</a>
-                </p>
-                {{/if}}
-                <p class="mt-1 text-xs/5 text-gray-500">
-                    {{#each keywords}}
-                    <span
-                        class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">{{name}}</span>
-                    {{/each}}
-                </p>
+
             </div>
         </div>
-        
+
     </li>
     {{/each}}
-</ul>
+</ul> --}}

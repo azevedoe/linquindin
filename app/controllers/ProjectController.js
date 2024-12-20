@@ -122,6 +122,28 @@ module.exports = {
 		}
 	},
 
+	async getShowProjectById(req, res) {
+		try {
+			const { id } = req.params;
+			const project = await Project.findById(id)
+				.populate("developers", ["name", "email", "avatar"])
+				.populate("keywords", "name");
+
+			if (!project) {
+				return res.status(404).send("Projeto não encontrado.");
+			}
+
+			res.render("projects/projectDetail", {
+				title: "Detalhes do Projeto",
+				project,
+				layout: "main.handlebars",
+			});
+		} catch (err) {
+			console.error(err);
+			res.status(500).send("Erro ao buscar o projeto.");
+		}
+	},
+
 	async getEditForm(req, res) {
 		try {
 			const { id } = req.params;

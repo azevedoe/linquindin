@@ -20,6 +20,10 @@ module.exports = {
 
 			next();
 		} else {
+			if (req.url.startsWith("/project/") && req.url.endsWith("/show")) {
+				return next();
+			}
+
 			if (req.url === "/login" || req.url === "/" || req.method === "POST") {
 				return next();
 			}
@@ -32,4 +36,3 @@ module.exports = {
 		}
 	},
 };
-

@@ -7,15 +7,19 @@
     </div>
     {{/if}}
     <form class="space-y-6" action="/users/create" method="POST" enctype="multipart/form-data">
-      <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <div class="sm:col-span-6">
-          <div id="preview-photo" class="size-12"></div>
-        </div>
-        <div class="sm:col-span-6">
-          <label for="photo" class="block text-sm font-medium text-gray-900">Foto do usuário</label>
-          <div class="mt-2">
-            <input type="file" name="photo" id="photo" value="{{project.title}}" placeholder="Foto do projeto"
-              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
+      <div>
+        <label for="photo-upload" class="block text-sm font-medium text-gray-900">Foto do usuário</label>
+        <div class="mt-2 flex items-center">
+          <div id="photo-container"
+            class="flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 cursor-pointer overflow-hidden">
+            <input id="photo-upload" name="photo" type="file" accept="image/*" class="hidden"
+              onchange="previewImage(event)" />
+            <label for="photo-upload" class="cursor-pointer">
+              <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </label>
           </div>
         </div>
       </div>
@@ -50,7 +54,7 @@
       </div>
 
       <div class="col-span-full">
-        <label for="chips-input" class="block text-sm font-medium text-gray-900">Palavras-chave</label>
+        <label for="chips-input" class="block text-sm font-medium text-gray-900">Skills</label>
         <div id="chip-container"
           class="flex flex-wrap items-center gap-2 mt-2 p-2 bg-white border rounded-lg focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
           <input id="chips-input" type="text"
@@ -124,21 +128,21 @@
     }
   });
 
-  const inputPhoto = document.getElementById('photo');
-  const previewPhoto = document.getElementById('preview-photo');
 
-  inputPhoto.addEventListener('change', function (event) {
+  function previewImage(event) {
     const file = event.target.files[0];
+    const container = document.getElementById('photo-container');
+    const input = document.getElementById('photo-upload');
 
     if (file) {
       const reader = new FileReader();
-
       reader.onload = function (e) {
-        previewPhoto.innerHTML = `<img src="${e.target.result}" alt="Preview da Foto" class="max-w-full h-auto rounded-md">`;
+        container.innerHTML = `<label for="photo-upload" class="cursor-pointer">
+                    <img src="${e.target.result}" alt="Preview" class="w-15 h-15 rounded-full object-cover" />
+                </label>`;
+        container.appendChild(input); // Re-adiciona o input ao container.
       };
-
       reader.readAsDataURL(file);
     }
-  });
-
+  }
 </script>

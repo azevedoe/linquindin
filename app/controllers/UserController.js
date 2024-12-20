@@ -21,11 +21,11 @@ async function resolveSkills(skills) {
 
 module.exports = {
 	async getSignup(req, res) {
-		res.render("auth/sign-up", { layout: "auth.handlebars" });
+		res.render("auth/sign-up", { layout: "main.handlebars" });
 	},
 
 	async getLogin(req, res) {
-		res.render("auth/login", { layout: "auth.handlebars" });
+		res.render("auth/login", { layout: "main.handlebars" });
 	},
 
 	async getAll(req, res) {
@@ -54,14 +54,14 @@ module.exports = {
 			if (!user) {
 				return res
 					.status(401)
-					.render("auth/login", { layout: 'auth.handlebars', error: "E-mail ou senha incorretos." });
+					.render("auth/login", { layout: 'main.handlebars', error: "E-mail ou senha incorretos." });
 			}
 
 			const passwordValida = await bcrypt.compare(password, user.password);
 			if (!passwordValida) {
 				return res
 					.status(401)
-					.render("auth/login", { layout: 'auth.handlebars', error: "E-mail ou senha incorretos." });
+					.render("auth/login", { layout: 'main.handlebars', error: "E-mail ou senha incorretos." });
 			}
 
 			req.session.userId = user._id;
@@ -121,7 +121,7 @@ module.exports = {
 				const imageBuffer = req.file.buffer;
 				avatarBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
 			}
-			
+
 			const parsedSkills = skills && skills !== "[]" ? JSON.parse(skills) : [];
 			const keywordIds = await resolveSkills(parsedSkills);
 			console.log(keywordIds)
@@ -130,7 +130,7 @@ module.exports = {
 				email,
 				password: hashedPassword,
 				type: isAdmin ? 'admin' : 'aluno',
-				avatar: avatarBase64, 
+				avatar: avatarBase64,
 				skills: keywordIds ?? []
 			});
 
@@ -156,6 +156,87 @@ module.exports = {
 		} catch (err) {
 			console.error(err);
 			res.status(500).send("Erro ao carregar o formulário de criação.");
+		}
+	},
+
+	async getEditForm(req, res) {
+		try {
+			const { id } = req.params;
+			const user = await User.findById(id).populate('skills', 'name');
+
+			const skills = user.skills.map((skill) => skill.name);
+
+			res.render("users/editUser", {
+				title: "Editar usuário",
+				active: "users",
+				user,
+				skills,
+				layout: "painel.handlebars",
+			});
+		} catch (err) {
+			console.error(err);
+			res.status(500).send("Erro ao carregar o formulário de criação.");
+		}
+	},
+
+	async postUpdate(req, res) {
+		try {
+			const upload = createUpload();
+
+			await new Promise((resolve, reject) => {
+				upload(req, res, (err) => {
+					if (err) {
+						reject(err);
+					}
+					resolve();
+				});
+			});
+
+			const { id } = req.params;
+			const { name, email, password, isAdmin, skills } = req.body;
+
+			const parsedSkills = skills && skills !== "[]" ? JSON.parse(skills) : [];
+			const keywordIds = await resolveSkills(parsedSkills);
+
+			const user = {
+				name,
+				email,
+				type: isAdmin ? 'admin' : 'aluno',
+				skills: keywordIds ?? []
+			}
+
+			if (password) {
+				const hashedPassword = await bcrypt.hash(password, 10);
+				user.password = hashedPassword
+			}
+
+			let avatarBase64 = null;
+			if (req.file) {
+				const imageBuffer = req.file.buffer;
+				avatarBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+				user.avatar = avatarBase64
+			}
+
+			const updatedUser = await User.findByIdAndUpdate(id, user, {
+				new: true,
+			});
+
+			if (!updatedUser) {
+				return res.status(404).send("Projeto não encontrado.");
+			}
+
+
+			if (req.url === "/sign-up") {
+				res.redirect("/login");
+			} else if (req.url === "/users/create") {
+				res.redirect("/users");
+			} else {
+				res.redirect("/users");
+			}
+
+		} catch (error) {
+			console.error("Erro ao criar usuário:", error);
+			res.status(500).send(`Erro ao criar usuário: ${error.message}`);
 		}
 	},
 

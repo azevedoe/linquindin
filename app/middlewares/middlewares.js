@@ -5,7 +5,9 @@ module.exports = {
 	},
 	sessionControl(req, res, next) {
 		if (req.session.userId) {
-			res.locals.login = req.session.login;
+			res.locals.username = req.session.username;
+			res.locals.userAvatar = req.session.avatar;
+			res.locals.userEmail = req.session.userEmail;
 
 			if (req.session.type === "admin") {
 				res.locals.isAdmin = true;
@@ -29,3 +31,4 @@ module.exports = {
 		}
 	},
 };
+

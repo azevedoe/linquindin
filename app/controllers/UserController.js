@@ -38,19 +38,21 @@ module.exports = {
 			if (!user) {
 				return res
 					.status(401)
-					.render("auth/login", { error: "E-mail ou senha incorretos." });
+					.render("auth/login", { layout: 'auth.handlebars', error: "E-mail ou senha incorretos." });
 			}
 
 			const passwordValida = await bcrypt.compare(password, user.password);
 			if (!passwordValida) {
 				return res
 					.status(401)
-					.render("auth/login", { error: "E-mail ou senha incorretos." });
+					.render("auth/login", { layout: 'auth.handlebars', error: "E-mail ou senha incorretos." });
 			}
 
 			req.session.userId = user._id;
-			req.session.email = user.email;
+			req.session.username = user.name;
+			req.session.userEmail = user.email;
 			req.session.type = user.type;
+			req.session.avatar = user.avatar;
 
 			if (user.type === "admin") {
 				req.session.isAdmin = true;

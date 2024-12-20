@@ -48,10 +48,10 @@ app.engine(
 				if (!Array.isArray(array)) return false;
 
 				if (array.includes(value)) {
-					return options.fn ? options.fn(this) : true; // Suporte a lógica de bloco
+					return options.fn ? options.fn(this) : true;
 				}
 
-				return options.inverse ? options.inverse(this) : false; // Suporte a lógica inversa
+				return options.inverse ? options.inverse(this) : false; 
 			},
 			getInitials: (name) => {
 				if (!name) return "";

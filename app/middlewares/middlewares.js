@@ -8,7 +8,7 @@ module.exports = {
 			res.locals.login = req.session.login;
 
 			if (req.session.type === "admin") {
-				res.locals.admin = true;
+				res.locals.isAdmin = true;
 			}
 
 			if (req.url === "/login" && req.method === "GET") {

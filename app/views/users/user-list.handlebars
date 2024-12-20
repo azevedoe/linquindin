@@ -23,13 +23,20 @@
           <p class="mt-1 truncate text-xs/5 text-gray-500">{{email}}</p>
 
           <p class="mt-1 text-xs/5 text-gray-500">
-            <span
-              class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
-            >{{type}}</span>
+            {{#if (eq type "aluno")}}
+              <span
+                class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
+              >Aluno</span>
+            {{/if}}
+            {{#if (eq type "admin")}}
+              <span
+                class="inline-flex items-center rounded-md bg-orange-50 px-2 py-1 text-xs font-medium text-orange-700 ring-1 ring-inset ring-blue-700/10"
+              >Administrador</span>
+            {{/if}}
           </p>
         </div>
       </div>
-      {{#if (eq type 'aluno')}}
+      {{#if isAdmin}}
         <div class="shrink-0 flex gap-3 sm:items-start">
           <form action="/users/{{_id}}/delete" method="POST">
             <button

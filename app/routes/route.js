@@ -36,6 +36,7 @@ route.get("/users", userController.getAll);
 route.get("/users/logout", userController.getLogout);
 route.get("/users/:id/delete", userController.deleteUser);
 
+route.get("/dashboard", dashboardController.getIndex);
 
 route.get("/projects", projectController.getIndex);
 route.get("/project/create", projectController.getCreateForm);

@@ -1,4 +1,4 @@
-<form action="/project/create" method="POST" enctype="multipart/form-data">
+<form action="/project/{{project._id}}/edit" method="POST" enctype="multipart/form-data">
     <div class="space-y-8">
         <div class="border-b border-gray-900/10 pb-8">
             <p class="mt-1 text-sm text-gray-600">
@@ -18,7 +18,7 @@
                 <div class="sm:col-span-6">
                     <label for="photo" class="block text-sm font-medium text-gray-900">Foto do Projeto</label>
                     <div class="mt-2">
-                        <input type="file" name="photo" id="photo" value="{{project.title}}" required
+                        <input type="file" name="photo" id="photo" value="{{project.title}}"
                             placeholder="Foto do projeto"
                             class="block w-auto rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm">
                     </div>
@@ -51,14 +51,15 @@
                     <label for="chips-input" class="block text-sm font-medium text-gray-900">Palavras-chave</label>
                     <div id="chip-container"
                         class="flex flex-wrap items-center gap-2 mt-2 p-2 bg-white border rounded-lg focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
-                        <!-- chips vão aparecer aqui -->
+
                         <input id="chips-input" type="text"
                             class="flex-1 border-none focus:outline-none text-sm text-gray-700 placeholder-gray-400"
                             placeholder="Digite e pressione Enter" />
                     </div>
                 </div>
                 <!-- inputs ocultos para desenvolvedores e palavras-chave -->
-                <input type="hidden" name="developers" id="hidden-developers" value="{{json developers }}">
+                <input type="hidden" name="developersEdit" id="hidden-edit-developers" value="{{json developers }}">
+                <input type="hidden" name="developers" id="hidden-developers" value="{{json inputDevelopers }}">
                 <input type="hidden" name="keywords" id="hidden-keywords" value="{{json keywords }}">
             </div>
         </div>
@@ -122,6 +123,13 @@
     const chipContainer = document.getElementById('chip-container');
     const chipsInput = document.getElementById('chips-input');
     const keywordsField = document.getElementById('hidden-keywords');
+
+    const keywords = JSON.parse(keywordsField.value);
+
+    keywords.forEach((keyword) => {
+        const chip = createChip(keyword)
+        chipContainer.insertBefore(chip, chipsInput);
+    })
 
     function createChip(text) {
         const chip = document.createElement('div');
@@ -188,8 +196,4 @@
             reader.readAsDataURL(file);
         }
     });
-
-
-
-
 </script>

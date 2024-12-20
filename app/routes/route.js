@@ -32,9 +32,7 @@ route.get("/logout", userController.getLogout);
 // Cadastro de usuário 
 route.post("/create", userController.postCreate);
 
-
 route.get("/dashboard", dashboardController.getIndex);
-
 
 route.get("/projects", projectController.getIndex);
 route.get("/project/create", projectController.getCreateForm);

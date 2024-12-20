@@ -70,7 +70,7 @@ app.set("view engine", "handlebars");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(middlewares.sessionControl);
+// app.use(middlewares.sessionControl);
 app.use(routes);
 
 app.use(

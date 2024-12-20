@@ -1,7 +1,8 @@
+const mongoose = require("mongoose");
 const Project = require("../models/project");
 const User = require("../models/user");
 const Keyword = require("../models/keyword");
-const createUpload = require('../utils/upload');  // Importe a função de upload dinâmica
+const createUpload = require("../utils/upload"); // Importe a função de upload dinâmica
 const { format } = require("date-fns");
 const ptBR = require("date-fns/locale/pt-BR");
 
@@ -67,8 +68,10 @@ module.exports = {
 
 				const { title, subtitle, link, developers, keywords } = req.body;
 
-				const parsedDevelopers = developers && developers !== "[]" ? JSON.parse(developers) : [];
-				const parsedKeywords = keywords && keywords !== "[]" ? JSON.parse(keywords) : [];
+				const parsedDevelopers =
+					developers && developers !== "[]" ? JSON.parse(developers) : [];
+				const parsedKeywords =
+					keywords && keywords !== "[]" ? JSON.parse(keywords) : [];
 
 				const keywordIds = await resolveKeywords(parsedKeywords);
 
@@ -116,26 +119,34 @@ module.exports = {
 	async getEditForm(req, res) {
 		try {
 			const { id } = req.params;
-			const project = await Project.findById(id).populate("developers", "name avatar").populate("keywords", "name");
-	
+			const users = await User.find({}, ["name", "avatar"]).lean();
+			const project = await Project.findById(id)
+				.populate("developers", "name avatar")
+				.populate("keywords", "name");
+
 			if (!project) {
 				return res.status(404).send("Projeto não encontrado.");
 			}
-	
-			// Pegue os desenvolvedores e palavras-chave associadas ao projeto
-			const developers = project.developers.map(dev => ({
+
+			const developers = project.developers.map((dev) => ({
 				id: dev._id,
 				name: dev.name,
-				avatar: dev.avatar
+				avatar: dev.avatar,
 			}));
-	
-			const keywords = project.keywords.map(keyword => keyword.name);
-	
+
+			const inputDevelopers = project.developers.map((dev) => {
+				return dev._id;
+			});
+
+			const keywords = project.keywords.map((keyword) => keyword.name);
+
 			res.render("projects/editProject", {
 				title: "Editar Projeto",
 				project,
-				developers,  
-				keywords,    
+				users,
+				keywords,
+				developers,
+				inputDevelopers: inputDevelopers,
 				layout: "painel.handlebars",
 			});
 		} catch (err) {
@@ -146,26 +157,53 @@ module.exports = {
 
 	async updateProject(req, res) {
 		try {
-			const { id } = req.params;
-			const { title, subtitle, link, developers, keywords } = req.body;
+			const upload = createUpload("projects");
 
-			const updatedProject = await Project.findByIdAndUpdate(
-				id,
-				{
+			upload(req, res, async (err) => {
+				if (err) {
+					return res
+						.status(400)
+						.send(`Erro ao fazer upload da imagem: ${err.message}`);
+				}
+
+				const { id } = req.params;
+				const { title, subtitle, link, developers, keywords } = req.body;
+
+				console.log('title', title);
+				console.log('subtitle', subtitle);
+				console.log('link', link);
+				console.log('developers', JSON.stringify(developers));
+				console.log('keywords', keywords);
+				
+				const parsedDevelopers = developers && developers !== "[]" ? JSON.parse(developers) : [];
+
+				const parsedKeywords =
+					keywords && keywords !== "[]" ? JSON.parse(keywords) : [];
+
+				const keywordIds = await resolveKeywords(parsedKeywords);
+
+				const updateData = {
 					title,
 					subtitle,
 					link,
-					developers: developers ? developers.split(",") : [],
-					keywords: keywords ? keywords.split(",") : [],
-				},
-				{ new: true },
-			);
+					developers: parsedDevelopers,
+					keywords: keywordIds,
+				};
 
-			if (!updatedProject) {
-				return res.status(404).send("Projeto não encontrado.");
-			}
+				if (req.file) {
+					updateData.photo = `/uploads/projects/${req.file.filename}`;
+				}
 
-			res.redirect("/projects");
+				const updatedProject = await Project.findByIdAndUpdate(id, updateData, {
+					new: true,
+				});
+
+				if (!updatedProject) {
+					return res.status(404).send("Projeto não encontrado.");
+				}
+
+				res.redirect("/projects");
+			});
 		} catch (err) {
 			console.error(err);
 			res.status(500).send("Erro ao atualizar o projeto.");

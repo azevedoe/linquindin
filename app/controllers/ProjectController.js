@@ -57,7 +57,7 @@ module.exports = {
 
 	async createProject(req, res) {
 		try {
-			const upload = createUpload("projects");
+			const upload = createUpload();
 
 			upload(req, res, async (err) => {
 				if (err) {
@@ -75,13 +75,19 @@ module.exports = {
 
 				const keywordIds = await resolveKeywords(parsedKeywords);
 
+				let photoBase64 = null;
+				if (req.file) {
+					const imageBuffer = req.file.buffer;
+					photoBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+				}
+
 				const newProject = new Project({
 					title,
 					subtitle,
 					link,
 					developers: parsedDevelopers,
 					keywords: keywordIds,
-					photo: req.file ? `/uploads/projects/${req.file.filename}` : null,
+					photo: photoBase64
 				});
 
 				await newProject.save();
@@ -159,51 +165,52 @@ module.exports = {
 		try {
 			const upload = createUpload("projects");
 
-			upload(req, res, async (err) => {
-				if (err) {
-					return res
-						.status(400)
-						.send(`Erro ao fazer upload da imagem: ${err.message}`);
-				}
-
-				const { id } = req.params;
-				const { title, subtitle, link, developers, keywords } = req.body;
-
-				console.log('title', title);
-				console.log('subtitle', subtitle);
-				console.log('link', link);
-				console.log('developers', JSON.stringify(developers));
-				console.log('keywords', keywords);
-				
-				const parsedDevelopers = developers && developers !== "[]" ? JSON.parse(developers) : [];
-
-				const parsedKeywords =
-					keywords && keywords !== "[]" ? JSON.parse(keywords) : [];
-
-				const keywordIds = await resolveKeywords(parsedKeywords);
-
-				const updateData = {
-					title,
-					subtitle,
-					link,
-					developers: parsedDevelopers,
-					keywords: keywordIds,
-				};
-
-				if (req.file) {
-					updateData.photo = `/uploads/projects/${req.file.filename}`;
-				}
-
-				const updatedProject = await Project.findByIdAndUpdate(id, updateData, {
-					new: true,
+			await new Promise((resolve, reject) => {
+				upload(req, res, (err) => {
+					if (err) {
+						reject(err);
+					}
+					resolve();
 				});
-
-				if (!updatedProject) {
-					return res.status(404).send("Projeto não encontrado.");
-				}
-
-				res.redirect("/projects");
 			});
+
+			const { id } = req.params;
+			const { title, subtitle, link, developers, keywords } = req.body;
+
+			let photoBase64 = null;
+			if (req.file) {
+				const imageBuffer = req.file.buffer;
+				photoBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+			}
+
+			const parsedDevelopers = developers && developers !== "[]" ? JSON.parse(developers) : [];
+
+			const parsedKeywords =
+				keywords && keywords !== "[]" ? JSON.parse(keywords) : [];
+
+			const keywordIds = await resolveKeywords(parsedKeywords);
+
+			const updateData = {
+				title,
+				subtitle,
+				link,
+				developers: parsedDevelopers,
+				keywords: keywordIds,
+			};
+
+			if (req.file) {
+				updateData.photo = photoBase64;
+			}
+
+			const updatedProject = await Project.findByIdAndUpdate(id, updateData, {
+				new: true,
+			});
+
+			if (!updatedProject) {
+				return res.status(404).send("Projeto não encontrado.");
+			}
+
+			res.redirect("/projects");
 		} catch (err) {
 			console.error(err);
 			res.status(500).send("Erro ao atualizar o projeto.");

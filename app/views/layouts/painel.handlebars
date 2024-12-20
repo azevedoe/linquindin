@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <div class="hidden md:block">
-                        <div class="ml-4 flex items-center md:ml-6">
+                        <div class="ml-4 flex items-center md:ml-6 gap-4">
                             <button type="button"
                                 class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                 id="user-menu-button">
@@ -47,6 +47,14 @@
                                     src="{{#if (notEq userAvatar null)}}{{ userAvatar }}{{else}}https://via.placeholder.com.br/32{{/if }}"
                                     alt="">
                             </button>
+                            <div class="ml-3">
+                                <div class="text-sm/4 font-light text-white">{{ username }}</div>
+                                <div class="text-sm/3 font-light text-gray-400">{{ userEmail }}</div>
+                            </div>
+                            <a href="/logout" id="add-developer" type="button"
+                                class="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ">
+                                <i class="fa-solid fa-right-from-bracket text-white"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="-mr-2 flex md:hidden">

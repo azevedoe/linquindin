@@ -196,8 +196,12 @@ module.exports = {
 				});
 			});
 
+			console.log(req.body);
+
 			const { id } = req.params;
 			const { title, subtitle, link, developers, keywords } = req.body;
+
+			console.log(title, subtitle, link, developers, keywords);
 
 			let photoBase64 = null;
 			if (req.file) {
@@ -223,6 +227,8 @@ module.exports = {
 			if (req.file) {
 				updateData.photo = photoBase64;
 			}
+			
+			console.log(updateData)
 
 			const updatedProject = await Project.findByIdAndUpdate(id, updateData, {
 				new: true,

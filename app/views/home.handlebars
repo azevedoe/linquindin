@@ -49,19 +49,23 @@
                         profissionais de teste, que impulsionam a inovação e a qualidade em cada projeto.
                     </p>
                     <p class="mt-5">
-                        <a href="/login" class="text-sm/6 font-semibold text-gray-900">Ver mais <span aria-hidden="true">&rarr;</span></a>
+                        <a href="/desenvolvedores" class="text-sm/6 font-semibold text-gray-900">Ver mais <span
+                                aria-hidden="true">&rarr;</span></a>
                     </p>
                 </div>
                 <ul role="list" class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
                     {{#each users }}
                     <li>
-                        <div class="flex items-center gap-x-6">
-                            <img class="size-16 rounded-full object-cover" src="{{ this.avatar }}" alt="">
-                            <div>
-                                <h3 class="text-base/7 font-semibold tracking-tight text-gray-900">{{ this.name }}</h3>
-                                <p class="text-sm/6 font-semibold text-indigo-600">{{this.email}}</p>
+                        <a href="/user/{{_id}}/show">
+                            <div class="flex items-center gap-x-6">
+                                <img class="size-16 rounded-full object-cover" src="{{ this.avatar }}" alt="">
+                                <div>
+                                    <h3 class="text-base/7 font-semibold tracking-tight text-gray-900">{{ this.name }}
+                                    </h3>
+                                    <p class="text-sm/6 font-semibold text-indigo-600">{{this.email}}</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </li>
                     {{/each}}
                     <!-- More people... -->

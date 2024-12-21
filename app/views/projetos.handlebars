@@ -1,0 +1,82 @@
+<form action="/projetos" method="get" class="space-y-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+        <!-- Filtro por Título -->
+        <div class="relative">
+            <label for="title" class="block text-sm font-medium text-gray-700">Título</label>
+            <input type="text" id="title" name="title" placeholder="Filtrar por título"
+                class="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <div class="relative flex flex-col text-left justify-end">
+            <label for="keywords" class="block text-sm font-medium text-gray-700">Palavras-chave</label>
+            <select id="keywords" name="keywords" multiple class="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <!-- As opções de habilidades serão carregadas dinamicamente do backend -->
+                {{#each keywords}}
+                    <option value="{{this._id}}">{{this.name}}</option>
+                {{/each}}
+            </select>
+        </div>
+
+        <!-- Botão de Filtrar -->
+        <div class="flex" style="align-items: end;">
+            <button type="submit" style="height: fit-content;"
+                class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Filtrar
+            </button>
+        </div>
+    </div>
+</form>
+
+
+<div class="bg-white mt-5">
+    <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+        <h2 class="text-2xl font-bold tracking-tight text-gray-900">Projetos dos nossos usuários</h2>
+
+        <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+            {{#each projects}}
+            <div class="group relative">
+                {{#if photo}}
+                <img src="{{ photo }}" alt="{{ title }}"
+                    class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-40">
+                {{else}}
+                <img loading="lazy"
+                    class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-40"
+                    src="https://via.placeholder.com/150" alt="Foto do projeto {{title}}">
+                {{/if}}
+
+                <div class="mt-4 flex justify-between">
+                    <div>
+                        <h3 class="text-sm text-gray-700">
+                            <a href="/project/{{ _id }}/show">
+                                <span aria-hidden="true" class="absolute inset-0"></span>
+                                {{ title }}
+                            </a>
+                        </h3>
+                        {{#if subtitle}}
+                        <p class="mt-1 truncate text-xs/5 text-gray-500 text-wrap min-h-[80px]">{{subtitle}}</p>
+                        {{/if}}
+
+                        <p class="mt-1 text-xs/5 text-gray-500">
+                            {{#each keywords}}
+                            <span
+                                class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">{{name}}</span>
+                            {{/each}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Ativar o Select2 no select de palavras-chave
+        $('#keywords').select2({
+            placeholder: "Selecione as palavras-chave",  // Texto de placeholder
+            allowClear: true,  // Permite limpar a seleção
+            width: '100%'  // Ajusta a largura para preencher o contêiner
+        });
+    });
+</script>

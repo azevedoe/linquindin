@@ -45,6 +45,46 @@ module.exports = {
 		}
 	},
 
+	async getUserById(req, res) {
+		try {
+			const { id } = req.params;
+			const user = await User.findById(id).populate('skills', 'name');
+
+			if (!user) {
+				return res.status(404).send("Usuário não encontrado.");
+			}
+
+			res.render("users/userDetail", {
+				title: "Detalhes do Usuário",
+				user,
+				layout: "painel.handlebars",
+			});
+		} catch (err) {
+			console.error(err);
+			res.status(500).send("Erro ao buscar o projeto.");
+		}
+	},
+
+	async getShowUserById(req, res) {
+		try {
+			const { id } = req.params;
+			const user = await User.findById(id).populate('skills', 'name');
+
+			if (!user) {
+				return res.status(404).send("Usuário não encontrado.");
+			}
+
+			res.render("users/userDetail", {
+				title: "Detalhes do Usuário",
+				user,
+				layout: "main.handlebars",
+			});
+		} catch (err) {
+			console.error(err);
+			res.status(500).send("Erro ao buscar o projeto.");
+		}
+	},
+
 	async postLogin(req, res) {
 		try {
 			const { email, password } = req.body;
@@ -72,6 +112,8 @@ module.exports = {
 
 			if (user.type === "admin") {
 				req.session.isAdmin = true;
+			} else {
+				req.session.isAdmin = false;
 			}
 
 			res.redirect("/projects");

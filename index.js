@@ -1,5 +1,6 @@
 const database = require("./app/database/connection");
 const mongoose = require("mongoose");
+const { ObjectId } = require('mongodb');
 const { format } = require("date-fns");
 const ptBR = require("date-fns/locale/pt-BR");
 
@@ -29,9 +30,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
 	session({
 		secret: "tbTdafD9F-mFT5wPk487f&FKSAL;yy}n",
-		cookie: { maxAge: 30 * 60 * 1000 },
-		resave: false,
-		saveUninitialized: false,
+		resave: true,
+		saveUninitialized: true,
 	}),
 );
 
@@ -43,6 +43,27 @@ app.engine(
 		partialsDir: path.join(__dirname, "app", "views", "components"),
 		handlebars: allowInsecurePrototypeAccess(Handlebars),
 		helpers: {
+			canShowButton: (currentUserId, userId, isAdmin) => {
+				if (isAdmin) return true;
+
+				const currentIdStr = currentUserId instanceof ObjectId ? currentUserId.toString() : currentUserId;
+				const userIdStr = userId instanceof ObjectId ? userId.toString() : userId;
+
+				return currentIdStr === userIdStr;
+			},
+			canEditProject: (currentUserId, developers, isAdmin) => {
+				if (isAdmin) return true;
+
+				const currentIdStr = currentUserId instanceof ObjectId ? currentUserId.toString() : currentUserId;
+
+				const isDeveloper = developers.some(dev => {
+					const devIdStr = dev instanceof ObjectId ? dev.toString() : dev;
+					return devIdStr === currentIdStr;
+				});
+
+				return isDeveloper;
+			},
+			or: (a, b) => a || b,
 			eq: (a, b) => a === b,
 			notEq: (a, b) => a !== b,
 			includes: (array, value, options) => {
@@ -52,7 +73,7 @@ app.engine(
 					return options.fn ? options.fn(this) : true;
 				}
 
-				return options.inverse ? options.inverse(this) : false; 
+				return options.inverse ? options.inverse(this) : false;
 			},
 			getInitials: (name) => {
 				if (!name) return "";

@@ -2,7 +2,6 @@ const express = require('express');
 const multer = require('multer');
 
 const projectController = require('../controllers/ProjectController');
-const callerProjectController = require('../controllers/CallerProjectController');
 const dashboardController = require('../controllers/DashboardController');
 const homeController = require('../controllers/HomeController');
 const userController = require('../controllers/UserController');
@@ -12,7 +11,7 @@ module.exports = route;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null,  "public/uploads/");
+        cb(null, "public/uploads/");
     },
     filename: (req, file, cb) => {
         req.imageName = `${req.body.nome}.png`
@@ -21,7 +20,9 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage });
 
-route.get("/", callerProjectController.getIndex);
+route.get("/", homeController.getHome);
+route.get("/projetos", homeController.getProjetos);
+route.get("/desenvolvedores", homeController.getDesenvolvedores);
 
 // Rotas de Login
 route.get("/sign-up", userController.getSignup);
@@ -35,7 +36,8 @@ route.post("/create", userController.postCreate);
 route.get("/users", userController.getAll);
 route.get("/logout", userController.getLogout);
 route.get("/users/create", userController.getCreateForm);
-// route.get("/user/:id", userController.getProjectById);
+route.get("/user/:id", userController.getUserById);
+route.get("/user/:id/show", userController.getShowUserById);
 route.get("/user/:id/edit", userController.getEditForm);
 route.post("/user/:id/edit", userController.postUpdate);
 route.post("/users/create", userController.postCreate);

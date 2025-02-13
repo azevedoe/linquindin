@@ -53,10 +53,12 @@
         <small class="text-gray-500">deixar em branco para não trocar</small>
       </div>
 
+      {{#if ../isAdmin}}
       <div>
         <input type="checkbox" id="isAdmin" name="isAdmin" {{#if (eq user.type 'admin' )}}checked{{/if}} />
         <label for="isAdmin">Administrador</label>
       </div>
+      {{/if }}
 
       <div class="col-span-full">
         <label for="chips-input" class="block text-sm font-medium text-gray-900">Skills</label>
